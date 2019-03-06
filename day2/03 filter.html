@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./lib/bootstrap-3.3.7.css">
+    <script src="./lib/vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <p> {{ msg | msgFormat("加油1") | test }}</p>
+    </div>
+
+    <div id="app2">
+        <p v-fontweight="900" v-fontsize="'30px'"> {{msg}} ----- {{ dt | dateFormat }}</p>
+    </div>
+</body>
+
+</html>
+<script>
+    //定义一个vue全局的过滤器,全局过滤器是所有的vm实例都可以调用的
+    Vue.filter('msgFormat', function (msg, arg) {
+        //字符串的 replace方法，抵押给参数除了可以写一个字符串之外，还可以定义一个正则
+        return msg.replace(/努力/g, arg);
+    });
+
+    Vue.filter('test', function (msg, arg) {
+        return msg + "++++++";
+    });
+
+    Vue.filter('dateFormat', function (date, pattern = "") {
+        //根据给定的时间字符串，得到特定的时间
+        var dt = new Date(date);
+        var year = dt.getFullYear();
+        var month = dt.getMonth() + 1;
+        var date = dt.getDate();
+
+        if (pattern && pattern.toLowerCase() === 'yyyy-mm-dd') {
+            return `${year}-${month}-${date}`;
+        } else {
+            var hh = dt.getHours();
+            var mm = dt.getMinutes();
+            var ss = dt.getSeconds();
+
+            return `${year}-${month}-${date} ${hh}:${mm}:${ss}`;
+        }
+    })
+
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            msg: "曾经的我不够努力，现在，我必须努力，通过我的努力让我们的生活更美好"
+        },
+        methods: {}
+    });
+
+    var vm2 = new Vue({
+        el: "#app2",
+        data: {
+            msg: "私有过滤器",
+            dt: new Date(),
+        },
+        methods: {},
+        //定义私有过滤器 
+        //过滤器调用的时候，采用的是就近原则，如果私有过滤器和全局过滤器名称一致优先调用私有过滤器
+        filters: {
+            dateFormat: function (date, pattern = "") {
+                //根据给定的时间字符串，得到特定的时间
+                var dt = new Date(date);
+                var year = dt.getFullYear();
+                //字符串的padStart()填充字符串方法，第一个参数是填充字符串后字符串的位数，第二个参数是用什么填充
+                var month = (dt.getMonth() + 1).toString().padStart(2, "0");
+                var date = dt.getDate().toString().padStart(2, "0");
+
+                if (pattern && pattern.toLowerCase() === 'yyyy-mm-dd') {
+                    return `${year}-${month}-${date}`;
+                } else {
+                    var hh = dt.getHours().toString().padStart(2, "0");
+                    var mm = dt.getMinutes().toString().padStart(2, "0");
+                    var ss = dt.getSeconds().toString().padStart(2, "0");
+
+                    return `${year}-${month}-${date} ${hh}:${mm}:${ss}     vm2中的过滤器`;
+                }
+            }
+        },
+        directives: {
+            //自定义私有指令
+            'fontweight': {
+                bind: function (el, binding) {
+                    console.log(binding.value)
+                    el.style.fontWeight = binding.value;
+                }
+            },
+            //简写私有指令：
+            fontsize:function(el,binding){ //注意：这个function等同于把代码写道了bind 和 update中去
+                el.style.fontSize = parseInt(binding.value) + "px";
+            }
+
+        },
+
+    });
+</script>

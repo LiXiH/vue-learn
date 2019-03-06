@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./lib/bootstrap-3.3.7.css">
+    <script src="./lib/vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <input type="button" value="改变msg的值" @click="msg='NO'">
+        <h3 id="h3"> {{ msg }}</h3>
+    </div>
+</body>
+
+</html>
+<script>
+
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            msg: "OK"
+        },
+        methods: {
+            show(){
+                console.log("执行了show方法")
+            }
+        },
+        beforeCreate(){ //在这个函数执行的时候，data和methods中的数据和函数都还没有被初始化
+            // console.log(this.msg);
+            // this.show();
+        },
+        create(){ // 如果要调用methods中的方法，或者要操作data中的数据最早只能在这个函数中操作
+            // console.log(this.msg);
+            // this.show();
+        },
+        beforMount(){ //此时，模板已经在内存中编译完成了，但是尚未把模板渲染到页面中
+            // console.log(document.getElementById("h3").innerText);
+            //在beforMount函数执行的时候，页面中的元素还没有真正的替换过来，只是之前写的
+        },
+        mounted(){ //此时内存中的模板已经真实的挂载到了页面中，当执行完这个函数，实例就已经被创建好了。
+
+        },
+        //运行中的两个事件
+        beforeUpdate(){ //这时候，表示界面还没有被更新，数据已经被更新了
+           // console.log("data中的msg："+this.msg);
+            // console.log("界面上元素的内容"+document.getElementById("h3").innerText);
+            //得出结论：当执行beforeUpdate的时候，data中的数据是最新的，但是页面中显示的数据还是旧的，此时页面尚未和最新的数据保持同步
+        },
+        update(){
+            console.log("data中的msg："+this.msg);
+            console.log("界面上元素的内容"+document.getElementById("h3").innerText);
+            //结论：update函数执行的时候，页面和data中的数据已经保持同步了，都是最新的
+        }
+    });
+</script>

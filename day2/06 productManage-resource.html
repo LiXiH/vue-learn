@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./lib/bootstrap-3.3.7.css">
+    <script src="./lib/vue.min.js"></script>
+    <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">添加品牌</h3>
+            </div>
+            <div class="panel-body form-inline">
+            
+                <label>
+                    Name：<input type="text" class="form-control" v-model="name" @keyup.f2="add">
+                </label>
+                <!-- 在vue中，使用事件绑定机制为元素指定处理函数的时候，如果加了小括号，就可以给函数传参，没有参数的时候加括号和不加括号都没有区别 -->
+                <input type="button" value="添加" class="btn btn-primary" @click="add">
+                <label>
+                    搜索名称关键字：
+                    <!-- 注意：在vue中所有的指令，在调用的时候，都以v-开头  -->
+                    <input type="text" class="form-control" v-model="keywords" v-focus v-col="'green'">
+                </label>    
+            </div>
+        </div>
+
+        <table class="table table-bordered table-hover table-striped">
+            <thead>
+                <tr>
+                    <td>Id</td>
+                    <td>userName</td>
+                    <td>birthday</td>
+                    <td>Operation</td>
+                </tr>
+            </thead>
+            <tbody>
+                <!--之前，v-for中的数据都是直接从data上的list中直接渲染过来的
+                    现在，我们自定义一个search方法，同时，把所有的关键字通过传参的形式，传递给search方法。
+                    在search方法内部，通过执行for循环，把所有的符合搜索关键字的数据保存到一个新数组中，返回
+                -->
+                <tr v-for="item in list" :key="item.id">
+                    <td>{{ item.id }}</td>
+                    <td v-text="item.userName"></td>
+                    <td>{{ item.birthday }}</td>
+                    <td>
+                        <a @click.prevent="del(item.id)">删除</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>
+<script>
+    //定义全局过滤器：dateFormat
+    Vue.filter('dateFormat',function(date,pattern=""){
+        //根据给定的时间字符串，得到特定的时间
+        var dt = new Date(date);
+        var year  = dt.getFullYear();
+        var month = dt.getMonth() + 1;
+        var date = dt.getDate();
+
+        if(pattern && pattern.toLowerCase() === 'yyyy-mm-dd'){
+            return `${year}-${month}-${date}`;
+        }else{
+            var hh = dt.getHours();
+            var mm = dt.getMinutes();
+            var ss = dt.getSeconds();
+
+            return `${year}-${month}-${date} ${hh}:${mm}:${ss}`;
+        }
+    })
+
+    //自定义全局按键修饰符
+    Vue.config.keyCodes.f2 = 113 ; // 113为f2对应的键盘码的值
+
+
+
+    // 使用 Vue.directive(参数1,{})定义指令
+    Vue.directive('focus',{
+        //在每个函数中，第一个参数永远是el，表示，被绑定了指令的元素，这个el参数是一个原生的js对象
+        bind: function(el){    //每当指令绑定到元素上的时候，会立即执行这个bind函数，只执行一次
+            //在元素刚绑定指令的时候，还没插入到DOM中去，这时候调用focus方法没有作用
+            //因为，一个元素，只有插入到了DOM中之后，才能获取焦点
+        },
+        inserted: function(el,binding){   //表示元素插入到DOM中的时候，会执行inserted函数,只能触发一次
+            //和js行为有关的操作，最好在inserted中执行，防止js不生效
+            el.focus();
+        },
+        updated: function(el){    //当vnode更新的时候，会执行updated，可能会触发多次
+            //
+        },
+    })
+
+    //定义一个自定义设置颜色的指令
+    Vue.directive('col',{
+        bind: function(el,binding){
+            //一般和样式有关的操作都在 bind 中进行
+            el.style.color = binding.value;
+        }
+    })
+
+    //全局配置实例中用到的接口的跟地址，
+    //若我们通过全局配置了请求接口的根域名，则，在每次单独发起http请求的时候，请求的url路径应该以相对路径开头，前面不能加 / ，否则不会启用根路径做拼接
+    Vue.http.options.root = "https://www.easy-mock.com/mock/5c0398193b23d255f07ec954/antd"   ; 
+    //全局启用emulateJSON选项,全局启用后就不需要在this.$http.post()方法中启用
+    Vue.http.options.emulateJSON = true;
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            name: '',
+            keywords: '',
+            list: [{
+                    id: 1,
+                    name: "奔驰",
+                    ctime: new Date()
+                },
+                {
+                    id: 2,
+                    name: "宝马",
+                    ctime: new Date()
+                },
+            ]
+        },
+        methods: {
+            //获取数据列表
+            getAllList(){
+                //通过this.$http获取到的数据，都在result.body中。 
+                this.$http.get("table/high/list").then(function(result){
+                    var result = result.body;
+                    if(result.code == 0){
+                        this.list = result.data.list;
+                    }else{
+                        alert("获取数据失败！");
+                    }
+                });
+            },
+            //添加信息
+            add() {
+                //因为我这里面没有添加数据的接口，用url代替接口，所以功能没有实现。
+                // this.$http.post("url",{name:this.name},{emulateJSON:tru}).then(result =>{
+                this.$http.post("url",{name:this.name}).then(result =>{
+                    if(result.body.code == 0){
+                        //数据添加成功后，只需要手动调用获取数据列表的方法，就能刷新列表
+                        this.getAllList();
+                    }else{
+                        alert("添加失败");
+                    }
+                })
+            },
+            // 根据id删除数据
+            del(id) {
+                this.$http.get("url"+id).then(result =>{
+                    if(result.body.code == 0){
+                        this.getAllList();
+                    }else{
+                        alert("删除失败");
+                    }
+                })
+                
+            },
+            
+            search(keywords) { //根据关键字，进行数据的搜索
+                var newList = [];
+                    this.list.forEach(item => {
+                        if(item.name.indexOf(keywords) != -1){
+                            newList.push(item);
+                        }
+                    });
+                    return newList;
+                return newList;
+            },
+
+        },
+        created(){
+                this.getAllList();
+        }
+    })
+</script>
+
+<!-- 过滤器调用时候的格式 {{ name | 过滤器名称 }}-->
