@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./lib/bootstrap-3.3.7.css">
+    <script src="./lib/vue.min.js"></script>
+    <style>
+        #box{
+            background-color: yellowgreen;
+            width: 100px;
+            height: 100px;
+            margin: 20px;
+        }
+        /* 2、自定义两组样式，来控制transition内部的元素实现动画  */
+        /* v-enter 【这是一个时间点】 是进入动画之前，元素的初始状态 */
+        /* v-leave-to 【这是一个时间点】 是动画结束时，元素的终止状态 */
+        .v-enter,
+        .v-leave-to{
+            opacity: 0;
+            transform: translateX(200px);
+        }
+        /* v-enter-active 【这是入场动画的时间段】 */
+        /* v-leave-active 【这是离场动画的时间段】 */
+        .v-enter-active,
+        .v-leave-active{
+            transition: all 0.8s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!--点击按钮让box显示，再次点击让box隐藏-->
+        <!-- 1、使用transition 元素，把需要动画控制的元素包裹起来-->
+        <!--transition 是vue官方提供的-->
+        <input type="button" value="toggle" @click="flag=!flag" />
+        <transition>
+            <div id="box" v-show="flag"></div>
+        </transition>
+    </div>
+
+</body>
+
+</html>
+<script>
+
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            flag:false
+        },
+        methods:{}
+    })
+</script>
