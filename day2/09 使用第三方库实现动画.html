@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./lib/animate.css">
+    <!-- 本案例中，入场使用该库的bounceIn 离场使用该库的bounceOut-->
+    <script src="./lib/vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!--点击按钮让box显示，再次点击让box隐藏-->
+        <!-- 1、使用transition 元素，把需要动画控制的元素包裹起来-->
+        <!--transition 是vue官方提供的-->
+        <!--2、使用类库中的类，给enter-active-class和leave-active-class指定动画类，
+            但是不管使用那个动画类都必须加上animated这个基本类才能实现动画-->
+        <input type="button" value="toggle" @click="flag=!flag" />
+        <transition enter-active-class="animated bounceIn" 
+                    leave-active-class="animated bounceOut">
+            <h3 v-show="flag">这是一个h3</h3>
+        </transition>
+
+        <hr/>
+
+        <!--animated基本类可以写在enter-active-class和leave-active-class中，
+            也可以直接放到要做动画元素的身上。-->
+        <!-- duration指定完成动画使用的时间 -->
+        <input type="button" value="toggle2" @click="flag=!flag" />
+        <!-- <transition enter-active-class="bounceIn" 
+                    leave-active-class="bounceOut"
+                    :duration="400">
+            <h3 v-show="flag" class="animated">这是一个h3</h3>
+        </transition> -->
+
+        <!-- duration传入对象，分别设置入场和离场的时间 -->
+        <transition enter-active-class="bounceIn" 
+                    leave-active-class="bounceOut"
+                    :duration="{enter:200,leave:400}">
+            <h3 v-show="flag" class="animated">这是一个h3</h3>
+        </transition>
+
+    </div>
+
+</body>
+
+</html>
+<script>
+
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            flag:false
+        },
+        methods:{}
+    })
+     
+</script>
