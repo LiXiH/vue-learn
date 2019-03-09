@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv='X-UA-Compatible' content='ie=edge'>
+    <title>Document</title>
+    <script src='./lib/vue.min.js'></script>
+</head>
+
+<body>
+
+    <div id='app'>
+        <!-- 还是使用标签的形式引入标签即可 -->
+        <mycom3></mycom3>
+    </div>
+
+    <!-- 在vue实例绑定的el外面，使用template元素定义组件的HTML结构 -->
+    <template id="temp">
+        <div>
+            <h1>这是通过template在外部定义的组件结构，这个方式有标签的智能提示和高亮</h1>
+            <h4>好用，不错</h4>
+        </div>
+    </template>
+
+</body>
+
+</html>
+<script>
+    Vue.component("mycom3",{
+        template:"#temp"
+    })
+    var vm = new Vue({
+        el: '#app',
+        data: {},
+        methods:{}
+    })
+</script>
