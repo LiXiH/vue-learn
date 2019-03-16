@@ -10,6 +10,14 @@
     <script src="./lib/vue.js"></script>
     <!-- 1、导入路由模块 -->
     <script src="./lib/vue-router.js"></script>
+    <style>
+        .router-link-active{
+            font-size: 18px;
+            font-style: initial;
+            color: palegreen;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <style>
 
@@ -17,9 +25,12 @@
 
 <body>
     <div id="app">
-         <a href="#/login">登陆</a>
-         <a href="#/register">注册</a>
+         <!-- <a href="#/login">登陆</a>
+         <a href="#/register">注册</a> -->
          <!-- 这是vue-router 提供的元素，专门用来当作占位符的，路由规则匹配到的组件，会展示到router-view 中去 -->
+         <!-- <router-view></router-view> -->
+         <router-link to="/login" tab="span">登陆</router-link>
+         <router-link to="/register">注册</router-link>
          <router-view></router-view>
     </div>
 
@@ -52,6 +63,7 @@
         routes:[         //路由匹配规则，每个路由匹配规则都是一个对象，这个规则对象身上又两个必须的属性
            //属性1 是path,表示监听哪个路由链接地址
            //属性2 是 component ，表示，如果路由是前面匹配到的path，则展示对应的组件,component的属性值必须是一个组件模板对象，不能是一个组件名称
+           { path:"/", redirect:"/login" }, //重定向
            { path:"/login", component: login },
            { path:"/register", component: register }
             
