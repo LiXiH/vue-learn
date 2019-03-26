@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./lib/bootstrap-3.3.7.css">
+    <script src="./lib/vue.js"></script>
+    <!-- 1、导入路由模块 -->
+    <script src="./lib/vue-router.js"></script>
+    <style>
+        body,h3{
+            margin: 0;
+            padding: 0;
+        }
+        .header{
+            background-color: brown;
+            height: 80px;
+        }
+        .contain{
+            display: flex;
+            height: 600px;
+            margin: 0;
+            padding: 0;
+        }
+        .left{
+            flex: 2;
+            background-color: chartreuse;
+        }
+        .main{
+            flex: 8;
+            background-color: pink;
+        }
+    </style>
+
+</head>
+<style>
+
+</style>
+
+<body>
+    <div id="app">
+            <router-view></router-view>
+            <div class="contain">
+                <router-view name="left"></router-view>
+                <router-view name="main"></router-view>
+            </div>
+    </div>
+    
+</body>
+
+</html>
+<script>
+    //组件模板对象
+    var header = {
+        template:"<h3 class='header'>主体</h3>"
+    };
+
+    var leftBox = {
+        template:"<h3 class='left'>left侧边栏</h3>"
+    };
+
+    var mainBox = {
+        template:"<h3 class='main'>main主体区</h3>"
+    };
+
+    var router = new VueRouter({
+        routes:[
+            { path:"/", 
+              components: {
+                 default: header,
+                 left: leftBox,
+                 main: mainBox
+              }
+            },
+        ]
+    })
+    var vm = new Vue({
+        el: "#app",
+        data: {},
+        methods:{},
+        // router:router
+        router //将路由规则对象，注册到vm实例上，用来监听url地址的变化，展示不同的组件
+    })
+</script>

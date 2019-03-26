@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./lib/bootstrap-3.3.7.css">
+    <script src="./lib/vue.js"></script>
+    <!-- 1、导入路由模块 -->
+    <script src="./lib/vue-router.js"></script>
+
+</head>
+<style>
+
+</style>
+
+<body>
+    <div id="app">
+        <router-link to="/login/12/lisi">登录</router-link>
+        <router-link to="/register">注册</router-link>
+        <router-view></router-view>
+    </div>
+
+</body>
+
+</html>
+<script>
+    var login = {
+        template:"<h2>登录 ---- id:{{$route.params.id}} ---name:{{$route.params.name}} </h2>",
+        created(){
+            console.log(this.$route);
+        },
+        data(){
+            return {}
+        }
+    };
+    var register = {
+        template:"<h2>注册</h2>"
+    };
+    var router = new VueRouter({
+        routes:[
+            {path:"/login/:id/:name",component: login},
+            {path:"/register",component: register}
+        ]
+    })
+
+    var vm = new Vue({
+        el: "#app",
+        data: {},
+        methods:{},
+        // router:router
+        router //将路由规则对象，注册到vm实例上，用来监听url地址的变化，展示不同的组件
+    })
+</script>
